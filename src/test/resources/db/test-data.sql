@@ -1,11 +1,4 @@
-CREATE TABLE member (
-    id integer,
-    first varchar(128),
-    middle varchar(128),
-    last varchar(128)
-)
-
-INSERT INTO members VALUES
+INSERT INTO member VALUES
 (1, 'Cory', 'L', 'Wandling'),
 (2, 'Rhonda', 'K', 'Wandling'),
 (3, 'Kyle', 'M', 'Wandling'),
