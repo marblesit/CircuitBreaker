@@ -1,5 +1,7 @@
 package com.pillar.circuitbreaker;
 
+import java.util.List;
+
 public interface TestService {
-	public long fibinacciOf(int i);
+	List<Member> getMembers();
 }
