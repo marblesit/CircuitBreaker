@@ -1,4 +1,4 @@
-INSERT INTO member VALUES
+INSERT INTO members VALUES
 (1, 'Cory', 'L', 'Wandling'),
 (2, 'Rhonda', 'K', 'Wandling'),
 (3, 'Kyle', 'M', 'Wandling'),
@@ -10,4 +10,4 @@ INSERT INTO member VALUES
 (9, 'Marjorie', 'B', 'Wandling'),
 (10, 'Nathaniel', 'L', 'Wandling'),
 (11, 'Tina', 'D', 'Wandling'),
-(12, 'Aaron', 'J', 'Wandling')
+(12, 'Aaron', 'J', 'Wandling');
