@@ -1,4 +1,4 @@
-package com.pillar.circuitbreaker;
+package com.marblesit.circuitbreaker;
 
 import org.junit.Before;
 import org.junit.Test;

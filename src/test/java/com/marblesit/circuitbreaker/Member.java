@@ -1,4 +1,4 @@
-package com.pillar.circuitbreaker;
+package com.marblesit.circuitbreaker;
 
 public class Member {
 	private Long id;
