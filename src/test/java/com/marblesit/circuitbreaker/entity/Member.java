@@ -1,4 +1,4 @@
-package com.marblesit.circuitbreaker;
+package com.marblesit.circuitbreaker.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +22,11 @@ public class Member {
 	@Column(name="last")
 	private String last;
 
+	public Long getId() {
+		return id;
+	}
+
 	public String getName() {
-		return first + " " + middle + " " + last + "(" + id + ")";
+		return first + " " + middle + " " + last;
 	}
 }
