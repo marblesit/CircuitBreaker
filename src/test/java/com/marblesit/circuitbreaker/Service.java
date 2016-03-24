@@ -7,4 +7,6 @@ public interface Service {
 	public int getThreadId();
 	public int getNonThreadedThreadThreadId();
 	String withZeroTimeout(String str);
+	public String exceptionWithFallback(String testStr);
+	public Throwable exceptionWithFallbackIncludingException(String testStr);
 }

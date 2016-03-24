@@ -1,5 +1,6 @@
 package com.marblesit.circuitbreaker;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeoutException;
 
@@ -8,6 +9,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import com.netflix.hystrix.HystrixCommand;
 import com.netflix.hystrix.HystrixCommandGroupKey;
@@ -22,23 +24,56 @@ import com.netflix.hystrix.exception.HystrixRuntimeException;
 public class CircuitBreakerAspect {
 
 	@Around("@annotation(com.marblesit.circuitbreaker.CircuitBreaker)")
-    public Object circuitBreakerAround(final ProceedingJoinPoint aJoinPoint) throws Throwable {
+    public Object circuitBreakerAround(final ProceedingJoinPoint joinPoint) throws Throwable {
+		CircuitBreaker cb = getAnnotation(joinPoint);
 		try {
-			return getHystrixCommand(aJoinPoint).execute();
+			return getHystrixCommand(joinPoint, cb).execute();
 		} catch (HystrixRuntimeException e) {
-			if (e.getCause() instanceof TimeoutException) {
-				throw new CircuitBreakerTimeoutException();
-			}
-			if (e.getCause() != null) {
-				throw e.getCause();
-			}
-			throw e;
+			return handleException(e, joinPoint, cb);
 		}
     }
 
-	private HystrixCommand<?> getHystrixCommand(final ProceedingJoinPoint joinPoint) throws NoSuchMethodException, SecurityException {
+	private Object handleException(HystrixRuntimeException e, ProceedingJoinPoint joinPoint, CircuitBreaker cb) throws Throwable {
+		if (cb.fallback().length() > 0) {
+			return executeFallback(e, joinPoint, cb);
+		}
+		if (e.getCause() instanceof TimeoutException) {
+			throw new CircuitBreakerTimeoutException();
+		}
+		if (e.getCause() != null) {
+			throw e.getCause();
+		}
+		throw e;
+	}
 
-		CircuitBreaker cb = getAnnotation(joinPoint);
+	private Object executeFallback(HystrixRuntimeException e, ProceedingJoinPoint joinPoint, CircuitBreaker cb) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Method method = getMethod(joinPoint);
+		Class<?> clazz = method.getDeclaringClass();
+		String name = cb.fallback();
+		Class<?> params[] = method.getParameterTypes();
+		Object[] args = joinPoint.getArgs();
+
+		Method m = ReflectionUtils.findMethod(clazz, name, params);
+		if (m == null) {
+			Class<?>[] temp = params;
+			params = new Class<?>[params.length + 1];
+			System.arraycopy(temp, 0, params, 0, temp.length);
+			params[params.length - 1] = Throwable.class;
+
+			Object[] tempArgs = args;
+			args = new Object[tempArgs.length + 1];
+			System.arraycopy(tempArgs, 0, args, 0, tempArgs.length);
+			args[args.length - 1] = e.getCause() == null ? e : e.getCause();
+
+			m = ReflectionUtils.findMethod(clazz, name, params);
+		}
+		if (m == null) {
+			throw new CircuitBreakerFallbackMethodMissing(clazz, name, params);
+		}
+		return m.invoke(joinPoint.getTarget(), args);
+	}
+
+	private HystrixCommand<?> getHystrixCommand(final ProceedingJoinPoint joinPoint, CircuitBreaker cb) throws NoSuchMethodException, SecurityException {
 
 		@SuppressWarnings("rawtypes")
 		HystrixCommand<?> theCommand = new HystrixCommand(getCommandSetter(joinPoint, cb)) {
@@ -56,14 +91,23 @@ public class CircuitBreakerAspect {
 		return theCommand;
 	}
 
-	private CircuitBreaker getAnnotation(final ProceedingJoinPoint joinPoint) throws NoSuchMethodException, SecurityException {
-		final MethodSignature methodSignature = (MethodSignature)joinPoint.getSignature();
-		Method method = methodSignature.getMethod();
-		if (method.getDeclaringClass().isInterface()) {
-			final String methodName = joinPoint.getSignature().getName();
-			method = joinPoint.getTarget().getClass().getDeclaredMethod(methodName, method.getParameterTypes());
-		}
+	private CircuitBreaker getAnnotation(final ProceedingJoinPoint joinPoint) {
+		Method method = getMethod(joinPoint);
 		return method.getAnnotation(CircuitBreaker.class);
+	}
+
+	private Method getMethod(final ProceedingJoinPoint joinPoint) {
+		try {
+			final MethodSignature methodSignature = (MethodSignature)joinPoint.getSignature();
+			Method method = methodSignature.getMethod();
+			if (method.getDeclaringClass().isInterface()) {
+				final String methodName = joinPoint.getSignature().getName();
+				method = joinPoint.getTarget().getClass().getDeclaredMethod(methodName, method.getParameterTypes());
+			}
+			return method;
+		} catch (NoSuchMethodException | SecurityException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private HystrixCommand.Setter getCommandSetter(ProceedingJoinPoint joinPoint, CircuitBreaker cb) {
