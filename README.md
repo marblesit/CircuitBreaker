@@ -16,6 +16,12 @@ This will use a Hytrix command to execute the method `methodName`.  The name use
 
 ### Options
 
+There are three options
+* name - Name of the command.  This will be used to collect statistics and for display when used with the [Hystrix dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard)
+* value - Name of the command if no name is specified
+* timeoutMilliseconds - Execution timeout in milliseconds.  Default is 1000 ms. 
+* useThreads - If true then a thread pool is used to handle the command execution.  Otherwise the command runs in the current thread and semaphores are used to controll the number of concurrent executions.
+
 Create a Circuit Breaker with name "getValue".  The timeout will be 5,000 ms and it will use thread pools.
 
 ```java
