@@ -27,3 +27,21 @@ Create a Circuit Breaker with name "getValue".  The timeout will be 10 sec and i
 ```java
 	@CircuitBreaker(name="getValue", timeoutMilliseconds=10000, useThreads=false)
 ```
+
+### Spring config
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<aop:aspectj-autoproxy/>
+	<context:component-scan base-package="com.marblesit.circuitbreaker"/>
+
+</beans>
+```
