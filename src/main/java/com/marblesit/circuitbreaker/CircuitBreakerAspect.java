@@ -105,7 +105,9 @@ public class CircuitBreakerAspect {
 				method = joinPoint.getTarget().getClass().getDeclaredMethod(methodName, method.getParameterTypes());
 			}
 			return method;
-		} catch (NoSuchMethodException | SecurityException e) {
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException(e);
+		} catch (SecurityException e) {
 			throw new RuntimeException(e);
 		}
 	}
