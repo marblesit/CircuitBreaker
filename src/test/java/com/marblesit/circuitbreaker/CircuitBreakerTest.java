@@ -35,6 +35,17 @@ public class CircuitBreakerTest {
 		assertTrue(end - start < ServiceImpl.TEST_TIMEOUT * 1.1f);
 	}
 
+	@Test
+	public void testZeroTimeoutHystrix() {
+		long start = System.currentTimeMillis();
+		service.withZeroTimeout(TEST_STR);
+
+		long end = System.currentTimeMillis();
+		assertTrue(end - start > ServiceImpl.TEST_TIMEOUT * 2);
+		assertTrue(end - start < ServiceImpl.TEST_TIMEOUT * 2.1f);
+	}
+
+
 	@Test(expected=MyException.class)
 	public void testException() throws MyException {
 		service.throwException();

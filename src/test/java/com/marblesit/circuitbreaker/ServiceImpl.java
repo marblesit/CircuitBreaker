@@ -27,6 +27,16 @@ public class ServiceImpl implements Service {
 	}
 
 	@Override
+	@CircuitBreaker(timeoutMilliseconds=0)
+	public String withZeroTimeout(String str) {
+		try {
+			Thread.sleep(2 * TEST_TIMEOUT);
+		} catch (InterruptedException e) {}
+		return str;
+	}
+
+
+	@Override
 	@CircuitBreaker(useThreads=true)
 	public int getThreadId() {
 		return Thread.currentThread().hashCode();

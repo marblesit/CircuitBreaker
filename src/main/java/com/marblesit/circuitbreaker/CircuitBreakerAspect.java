@@ -76,7 +76,7 @@ public class CircuitBreakerAspect {
 
 		Setter properties =
 				HystrixCommandProperties.Setter().
-					withExecutionTimeoutEnabled(true).
+					withExecutionTimeoutEnabled(cb.timeoutMilliseconds() == 0 ? false : true).
 					withExecutionTimeoutInMilliseconds(cb.timeoutMilliseconds()).
 					withExecutionIsolationStrategy(strategy);
 

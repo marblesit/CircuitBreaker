@@ -6,4 +6,5 @@ public interface Service {
 	public String withTimeout(String str);
 	public int getThreadId();
 	public int getNonThreadedThreadThreadId();
+	String withZeroTimeout(String str);
 }
