@@ -12,4 +12,5 @@ public @interface CircuitBreaker {
 	String name() default "";
 	int timeoutMilliseconds() default 1000;
 	boolean useThreads() default true;
+	String fallback() default "";
 }

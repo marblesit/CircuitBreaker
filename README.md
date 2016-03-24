@@ -17,10 +17,15 @@ This will use a Hytrix command to execute the method `methodName`.  The name use
 ### Options
 
 There are three options
-* name - Name of the command.  This will be used to collect statistics and for display when used with the [Hystrix dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard)
+* name - Name of the command used to collect statistics and for display when used with 
+the [Hystrix dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard)
 * value - Name of the command if no name is specified
 * timeoutMilliseconds - Execution timeout in milliseconds.  Default is 1000 ms. 
-* useThreads - If true then a thread pool is used to handle the command execution.  Otherwise the command runs in the current thread and semaphores are used to controll the number of concurrent executions.
+* useThreads - If true then a thread pool is used to handle the command execution.  Otherwise 
+the command runs in the current thread and semaphores are used to control the number of concurrent executions.
+* fallback - Method name for the fallback method (i.e. method executed if an exception is thrown. If a 
+fallback is not specified then the exception is thrown for the calling application to handle.
+
 
 Create a Circuit Breaker with name "getValue".  The timeout will be 5,000 ms and it will use thread pools.
 
@@ -32,6 +37,35 @@ Create a Circuit Breaker with name "getValue".  The timeout will be 10 sec and i
 
 ```java
 	@CircuitBreaker(name="getValue", timeoutMilliseconds=10000, useThreads=false)
+```
+
+### Fallback
+The fallback method should have the same signature as the method that was annotated.  For instance
+
+```java
+	@CircuitBreaker(fallback="fallback")
+	public String exceptionWithFallback(String s) {
+		throw new MyRuntimeException();
+	}
+
+	public String fallback(String s) {
+		return s;
+	}
+```
+
+The fallback can also add a ```Throwable``` argument to the end of the parameter list to
+get the exception that caused the fallback to be executed.
+
+```java
+	@CircuitBreaker(fallback="fallback")
+	public String exceptionWithFallback(String s) {
+		throw new MyRuntimeException();
+	}
+
+	public String fallback(String s, Throwable t) {
+		t.printStackTrace();
+		return s;
+	}
 ```
 
 ### Spring config

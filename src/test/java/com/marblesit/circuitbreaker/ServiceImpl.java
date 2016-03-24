@@ -48,4 +48,23 @@ public class ServiceImpl implements Service {
 		return Thread.currentThread().hashCode();
 	}
 
+	@Override
+	@CircuitBreaker(fallback="fallback")
+	public String exceptionWithFallback(String s) {
+		throw new MyRuntimeException();
+	}
+
+	public String fallback(String s) {
+		return s;
+	}
+
+	@Override
+	@CircuitBreaker(fallback="fallbackWithException")
+	public Throwable exceptionWithFallbackIncludingException(String testStr) {
+		throw new MyRuntimeException();
+	}
+
+	public Throwable fallbackWithException(String testStr, Throwable t) {
+		return t;
+	}
 }

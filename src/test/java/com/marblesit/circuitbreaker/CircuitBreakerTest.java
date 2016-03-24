@@ -66,4 +66,15 @@ public class CircuitBreakerTest {
 
 		assertEquals(threadId, serviceThreadId);
 	}
+
+	@Test
+	public void testExceptionWithFallback() throws MyException {
+		assertEquals(TEST_STR, service.exceptionWithFallback(TEST_STR));
+	}
+
+	@Test
+	public void testExceptionPassingExceptionToFallback() throws MyException {
+		Throwable t = service.exceptionWithFallbackIncludingException(TEST_STR);
+		assertTrue(t instanceof MyRuntimeException);
+	}
 }
