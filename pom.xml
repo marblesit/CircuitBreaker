@@ -1,25 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<parent>
+		<groupId>com.marblesit</groupId>
+		<artifactId>parent-pom</artifactId>
+		<version>0.0.1</version>
+	</parent>
+
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.marblesit</groupId>
 	<artifactId>circuitbreaker</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
+	<packaging>jar</packaging>
 
-
-	<distributionManagement>
-		<repository>
-			<uniqueVersion>false</uniqueVersion>
-			<id>releases</id>
-			<name>Releases</name>
-			<url>http://nexus.marblesit.com/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-			<uniqueVersion>true</uniqueVersion>
-			<id>snapshots</id>
-			<name>Snapshots</name>
-			<url>http://nexus.marblesit.com/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
 
 	<dependencies>
 		<dependency>
