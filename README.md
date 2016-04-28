@@ -16,7 +16,7 @@ This will use a Hytrix command to execute the method `methodName`.  The name use
 
 ### Options
 
-There are three options
+There are five options
 * name - Name of the command used to collect statistics and for display when used with 
 the [Hystrix dashboard](https://github.com/Netflix/Hystrix/tree/master/hystrix-dashboard)
 * value - Name of the command if no name is specified
