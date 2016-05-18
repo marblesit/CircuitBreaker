@@ -14,6 +14,8 @@ Based on http://blog.mirkosertic.de/architecturedesign/springhystrix
 
 This will use a Hytrix command to execute the method `methodName`.  The name used for the Hystrix command will be the signature of the method.
 
+You must also include Spring's AOP configuration (see below)
+
 ### Options
 
 There are five options
@@ -69,7 +71,6 @@ get the exception that caused the fallback to be executed.
 ```
 
 ### Spring config
-
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
