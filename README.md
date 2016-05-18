@@ -14,7 +14,7 @@ Based on http://blog.mirkosertic.de/architecturedesign/springhystrix
 
 This will use a Hytrix command to execute the method `methodName`.  The name used for the Hystrix command will be the signature of the method.
 
-You must also include Spring's AOP configuration (see below)
+You must also include Spring's AOP configuration [see below](#spring-config)
 
 ### Options
 
